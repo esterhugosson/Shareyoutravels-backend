@@ -2,9 +2,8 @@ import request from 'supertest'
 import { app } from '../../app.js'
 import { connectToDatabase, disconnectFromDatabase } from '../../config/mongoose.js'
 import dotenv from 'dotenv'
-dotenv.config()
 
-jest.setTimeout(15000) // 15 seconds for pipeline
+dotenv.config()
 
 /**
  * Random string function.
@@ -23,7 +22,7 @@ describe('Account Registration', () => {
 
   afterAll(async () => {
     await disconnectFromDatabase()
-  })
+  }, 15000) //timeout 15 sec
 
   it('should register a user successfully', async () => {
     const uniqueSuffix = randomString()
