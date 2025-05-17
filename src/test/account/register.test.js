@@ -1,8 +1,8 @@
 import request from 'supertest'
 import { app } from '../../app.js'
 import { connectToDatabase, disconnectFromDatabase } from '../../config/mongoose.js'
-/* import dotenv from 'dotenv'
-dotenv.config() */
+import dotenv from 'dotenv'
+dotenv.config() 
 
 /**
  * Random string function.
