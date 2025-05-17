@@ -16,7 +16,7 @@ function randomString (length = 6) {
 
 describe('Account Registration', () => {
   beforeAll(async () => {
-    await connectToDatabase(process.env.DB_CONNECTION_STRING)
+    await connectToDatabase("mongodb://localhost:55000/testdb")
   })
 
   afterAll(async () => {
