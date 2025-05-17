@@ -8,24 +8,25 @@ stages:
   - build
   - test
 
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
 
+before_script:
+  - npm ci
 
-Build system:
+build-system:
   stage: build
-  
   script:
     - echo "Building..."
 
-
-Code Linting:
+code-linting:
   stage: test
-  
   script:
     - npm run lint
 
-Unit tests:
+unit-tests:
   stage: test
-  
   script:
     - npm test
-
