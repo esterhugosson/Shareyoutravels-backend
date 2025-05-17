@@ -1,24 +1,31 @@
 image: node:20
 
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - local: '.lint.yml'
+
 stages:
-  - install
-  - lint
+  - build
   - test
 
-cache:
-  paths:
-    - node_modules/
 
-before_script:
-  - npm install
 
-lint:
-  stage: lint
+Build system:
+  stage: build
+  
+  script:
+    - echo "Building..."
+
+
+Code Linting:
+  stage: test
+  
   script:
     - npm run lint
 
-test:
+Unit tests:
   stage: test
+  
   script:
-    - npm run test
+    - npm test
 
