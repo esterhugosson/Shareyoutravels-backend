@@ -1,8 +1,8 @@
 /**
  * @file Defines the AccountController class.
  * @module controllers/AccountController
- * @author Mats Loock
- * @version 3.1.0
+ * @author Ester Hugosson
+ * @version 1.0.0
  */
 
 import http from 'node:http'
@@ -24,7 +24,7 @@ export class AccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async signin(req, res, next) {
+  async signin (req, res, next) {
     try {
       logger.silly('Authenticating user', { body: req.body })
 
@@ -36,7 +36,6 @@ export class AccountController {
         process.env.ACCESS_TOKEN_SECRET,
         process.env.ACCESS_TOKEN_LIFE
       )
-
 
       // Create the refresh token with the longer lifespan.
       const refreshToken = await JsonWebToken.encodeUser(
@@ -75,19 +74,17 @@ export class AccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async register(req, res, next) {
+  async register (req, res, next) {
     try {
-
-
       const { firstName, lastName, username, email, password } = req.body
 
       // --- Manual validation ---
-      const errors = [];
+      const errors = []
 
       if (!firstName || typeof firstName !== 'string') errors.push('Invalid or missing firstName')
       if (!lastName || typeof lastName !== 'string') errors.push('Invalid or missing lastName')
       if (!username || typeof username !== 'string') errors.push('Invalid or missing username')
-      //if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('Invalid or missing email')
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('Invalid or missing email')
       if (!password || typeof password !== 'string' || password.length < 6) {
         errors.push('Password must be at least 6 characters')
       }
@@ -98,7 +95,6 @@ export class AccountController {
         err.cause = errors
         return next(err)
       }
-
 
       const userDocument = await UserModel.create({
         firstName,
@@ -136,17 +132,17 @@ export class AccountController {
   }
 
   /**
- * Refreshes the access token using a valid refresh token.
- *
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {Function} next - Express next middleware function.
- */
-  async refreshToken(req, res, next) {
+   * Refreshes the access token using a valid refresh token.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async refreshToken (req, res, next) {
     try {
-      const { refresh_token } = req.body
+      const { refreshToken } = req.body
 
-      if (!refresh_token) {
+      if (!refreshToken) {
         const err = new Error('Refresh token is missing or invalid')
         err.status = 400
         throw err
@@ -154,10 +150,9 @@ export class AccountController {
 
       // Decode and verify the refresh token.
       const decodedUser = await JsonWebToken.decodeUser(
-        refresh_token,
+        refreshToken,
         process.env.REFRESH_TOKEN_SECRET
       )
-
 
       const userDocument = await UserModel.findById(decodedUser.id)
       if (!userDocument) {
@@ -192,8 +187,14 @@ export class AccountController {
     }
   }
 
-
-  async updaeAccountInformation(req, res, next) {
+  /**
+   * Updates the account information for a user.
+   * 
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async updaeAccountInformation (req, res, next) {
     try {
       const userId = req.user.id
 
@@ -242,7 +243,6 @@ export class AccountController {
       }
 
       res.status(200).json({ message: 'Account updated successfully', user: updatedUser.toObject() })
-
     } catch (error) {
       let httpStatusCode = 500
 
@@ -259,11 +259,15 @@ export class AccountController {
       err.cause = error
       next(err)
     }
-
   }
 
-  async deleteAccount(req, res, next) {
-
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  async deleteAccount (req, res, next) {
     try {
       const userId = req.user.id
 
@@ -280,10 +284,5 @@ export class AccountController {
       err.cause = error
       next(err)
     }
-
   }
-
-
-
-
 }

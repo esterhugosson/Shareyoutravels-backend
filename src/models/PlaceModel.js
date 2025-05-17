@@ -5,25 +5,25 @@ const schema = new mongoose.Schema({
   travelId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Travel',
-    required: true,
+    required: true
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   description: {
-    type: String,
+    type: String
   },
   location: {
     lat: { type: Number, required: true },
-    lng: { type: Number, required: true },
+    lng: { type: Number, required: true }
   },
   dateVisited: {
-    type: Date,
+    type: Date
   },
   funFacts: {
-    type: [String], 
-    default: [],
+    type: [String],
+    default: []
   },
   rating: {
     type: Number

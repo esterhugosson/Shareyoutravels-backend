@@ -1,4 +1,3 @@
-
 /**
  * @file Defines the main router.
  * @module routes/router

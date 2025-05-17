@@ -8,7 +8,6 @@
 import express from 'express'
 import { AccountController } from '../../../controllers/api/AccountController.js'
 
-
 export const router = express.Router()
 
 const controller = new AccountController()
@@ -22,11 +21,11 @@ router.post('/signin', (req, res, next) => controller.signin(req, res, next))
 // Register
 router.post('/register', (req, res, next) => controller.register(req, res, next))
 
-//Refreshtoken
+// Refreshtoken
 router.post('/refresh', (req, res, next) => controller.refreshToken(req, res, next))
 
-//update
+// update
 router.patch('/update', (req, res, next) => controller.updaeAccountInformation(req, res, next))
 
-//delete
+// delete
 router.delete('/delete', (req, res, next) => controller.deleteAccount(req, res, next))

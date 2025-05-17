@@ -230,5 +230,3 @@ if (process.env.LOGGER_DB_CONNECTION_STRING) {
     format: combine(baseFormat)
   }))
 }
-
-

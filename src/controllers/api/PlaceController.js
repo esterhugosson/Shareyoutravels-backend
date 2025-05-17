@@ -15,131 +15,133 @@ import mongoose from 'mongoose'
  * Encapsulates a controller.
  */
 export class PlaceController {
+  /**
+   *
+   */
+  constructor () {
+    this.travelController = new TravelController()
+  }
 
-    constructor() {
-        this.travelController = new TravelController()
+  /**
+   *
+   * @param req
+   * @param res
+   */
+  async allPlacesFromTravel (req, res) {
+    const { id } = req.params
+    const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
+    if (!travel) throw createError(404, 'Travel not found')
+
+    await this.#validateOwnership(travel, req.user.id)
+
+    const populatedTravel = await travel.populate('places')
+    res.status(200).json(populatedTravel.places)
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   */
+  async onePlaceFromTravel (req, res) {
+    const { id, placeId } = req.params
+    const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
+    if (!travel) throw createError(404, 'Travel not found')
+
+    const place = await PlaceModel.findById(placeId)
+    if (!place) throw createError(404, 'Place not found')
+
+    res.status(200).json(place)
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   */
+  async addPlaceToTravel (req, res) {
+    const { id } = req.params
+    const userId = req.user.id
+
+    // 1. Fetch travel
+    const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, userId)
+    if (!travel) throw createError(404, 'Travel not found')
+
+    // 2. Ownership check
+    await this.#validateOwnership(travel, userId)
+
+    // 3. Create place
+    const place = new PlaceModel({
+      travelId: travel.id,
+      name: req.body.name,
+      description: req.body.description || '',
+      location: req.body.location || '',
+      dateVisited: req.body.date,
+      funFacts: req.body.funFacts,
+      rating: req.body.rating
+    })
+
+    await place.save()
+
+    // 4. Link place to travel
+    travel.places.push(place._id)
+    await travel.save()
+
+    res.status(201).json(place)
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   */
+  async updatePlace (req, res) {
+    const { id, placeId } = req.params
+    const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
+    if (!travel) throw createError(404, 'Travel not found')
+
+    await this.#validateOwnership(travel, req.user.id)
+
+    const place = await PlaceModel.findByIdAndUpdate(
+      placeId,
+      req.body,
+      { new: true, runValidators: true }
+    )
+    if (!place) throw createError(404, 'Place not found')
+
+    res.status(200).json(place)
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   */
+  async deletePlace (req, res) {
+    const { id, placeId } = req.params
+    const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
+    if (!travel) throw createError(404, 'Travel not found')
+
+    await this.#validateOwnership(travel, req.user.id)
+
+    // Remove place from travel
+    travel.places.pull(placeId)
+    await travel.save()
+
+    // Delete place document
+    await PlaceModel.findByIdAndDelete(placeId)
+
+    res.sendStatus(204)
+  }
+
+  /**
+   *
+   * @param travel
+   * @param userId
+   */
+  async #validateOwnership (travel, userId) {
+    if (!travel.userId.equals(userId)) {
+      throw createError(403, 'You are not authorized to modify this image.')
     }
-
-
-
-    async allPlacesFromTravel(req, res) {
-
-        const { id } = req.params
-        const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
-        if (!travel) throw createError(404, 'Travel not found')
-
-        await this.#validateOwnership(travel, req.user.id)
-
-        const populatedTravel = await travel.populate('places')
-        res.status(200).json(populatedTravel.places)
-
-
-
-    }
-
-
-    async onePlaceFromTravel(req, res) {
-
-        const { id, placeId } = req.params
-        const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
-        if (!travel) throw createError(404, 'Travel not found')
-
-
-        const place = await PlaceModel.findById(placeId)
-        if (!place) throw createError(404, 'Place not found')
-
-        res.status(200).json(place)
-    }
-
-
-
-    async addPlaceToTravel(req, res) {
-
-        const { id } = req.params
-        const userId = req.user.id
-
-
-        // 1. Fetch travel
-        const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, userId)
-        if (!travel) throw createError(404, 'Travel not found')
-
-        // 2. Ownership check
-        await this.#validateOwnership(travel, userId)
-
-        // 3. Create place
-        const place = new PlaceModel({
-            travelId: travel.id,
-            name: req.body.name,
-            description: req.body.description || '',
-            location: req.body.location || '',
-            dateVisited: req.body.date,
-            funFacts: req.body.funFacts,
-            rating: req.body.rating
-        })
-
-        await place.save()
-
-        // 4. Link place to travel
-        travel.places.push(place._id)
-        await travel.save()
-
-        res.status(201).json(place)
-
-
-
-
-
-
-    }
-
-    async updatePlace(req, res) {
-
-        const { id, placeId } = req.params
-        const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
-        if (!travel) throw createError(404, 'Travel not found')
-
-        await this.#validateOwnership(travel, req.user.id)
-
-        const place = await PlaceModel.findByIdAndUpdate(
-            placeId,
-            req.body,
-            { new: true, runValidators: true }
-        )
-        if (!place) throw createError(404, 'Place not found')
-
-        res.status(200).json(place)
-
-
-    }
-
-    async deletePlace(req, res) {
-
-        const { id, placeId } = req.params
-        const travel = await this.travelController.findTravelByIdWithOwnershipCheck(id, req.user.id)
-        if (!travel) throw createError(404, 'Travel not found')
-
-        await this.#validateOwnership(travel, req.user.id)
-
-        // Remove place from travel
-        travel.places.pull(placeId)
-        await travel.save()
-
-        // Delete place document
-        await PlaceModel.findByIdAndDelete(placeId)
-
-        res.sendStatus(204)
-
-
-    }
-
-
-
-
-    async #validateOwnership(travel, userId) {
-        if (!travel.userId.equals(userId)) {
-            throw createError(403, 'You are not authorized to modify this image.');
-        }
-    }
-
-
+  }
 }

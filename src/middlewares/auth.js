@@ -8,8 +8,6 @@
 import http from 'node:http'
 import { JsonWebToken } from '../lib/JsonWebToken.js'
 
-
-
 /**
  * Authenticates a request based on a JSON Web Token (JWT).
  *
