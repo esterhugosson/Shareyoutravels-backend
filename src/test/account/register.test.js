@@ -4,6 +4,8 @@ import { connectToDatabase, disconnectFromDatabase } from '../../config/mongoose
 import dotenv from 'dotenv'
 dotenv.config()
 
+jest.setTimeout(15000) // 15 seconds for pipeline
+
 /**
  * Random string function.
  *
