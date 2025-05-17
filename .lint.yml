@@ -1,4 +1,4 @@
-ariables:
+variables:
   LINT_RC: "https://gitlab.lnu.se/pipelines/stages/-/raw/master/lint/eslint/.eslintrc.json"
 
 

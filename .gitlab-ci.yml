@@ -6,6 +6,7 @@ include:
 
 stages:
   - build
+  - lint
   - test
 
 cache:
@@ -20,11 +21,6 @@ build-system:
   stage: build
   script:
     - echo "Building..."
-
-code-linting:
-  stage: test
-  script:
-    - npm run lint
 
 unit-tests:
   stage: test
