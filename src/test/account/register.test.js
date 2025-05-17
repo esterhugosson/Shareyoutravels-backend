@@ -22,7 +22,7 @@ describe('Account Registration', () => {
 
   afterAll(async () => {
     await disconnectFromDatabase()
-  }, 15000) //timeout 15 sec
+  }, 15000) // timeout 15 sec
 
   it('should register a user successfully', async () => {
     const uniqueSuffix = randomString()
