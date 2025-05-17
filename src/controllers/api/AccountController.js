@@ -73,6 +73,7 @@ export class AccountController {
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
+   * @returns {void}
    */
   async register (req, res, next) {
     try {
@@ -189,10 +190,11 @@ export class AccountController {
 
   /**
    * Updates the account information for a user.
-   * 
+   *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
+   * @returns {void}
    */
   async updaeAccountInformation (req, res, next) {
     try {
@@ -262,10 +264,12 @@ export class AccountController {
   }
 
   /**
+   * Delete account for user.
    *
-   * @param req
-   * @param res
-   * @param next
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   * @returns {void}
    */
   async deleteAccount (req, res, next) {
     try {

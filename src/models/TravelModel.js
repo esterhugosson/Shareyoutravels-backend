@@ -30,8 +30,10 @@ const schema = new mongoose.Schema({
     required: [true, 'End date is required.'],
     validate: {
       /**
+       * Validate so the end date is after the start date.
        *
-       * @param value
+       * @param {Date} value The end date to be valued.
+       * @returns {boolean} True or false if the end date is after the start date.
        */
       validator: function (value) {
         return this.startDate <= value

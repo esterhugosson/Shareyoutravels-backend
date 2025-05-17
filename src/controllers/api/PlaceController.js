@@ -7,25 +7,24 @@
 
 import { PlaceModel } from '../../models/PlaceModel.js'
 import { TravelController } from './TravelController.js'
-import { logger } from '../../config/winston.js'
 import createError from 'http-errors'
-import mongoose from 'mongoose'
 
 /**
  * Encapsulates a controller.
  */
 export class PlaceController {
   /**
-   *
+   * Constructs a new instance with a travelController.
    */
   constructor () {
     this.travelController = new TravelController()
   }
 
   /**
+   * Get all places from specifik travel.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async allPlacesFromTravel (req, res) {
     const { id } = req.params
@@ -39,9 +38,10 @@ export class PlaceController {
   }
 
   /**
+   * Get one place from specifik travel.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async onePlaceFromTravel (req, res) {
     const { id, placeId } = req.params
@@ -55,9 +55,10 @@ export class PlaceController {
   }
 
   /**
+   * Create new place.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async addPlaceToTravel (req, res) {
     const { id } = req.params
@@ -91,9 +92,10 @@ export class PlaceController {
   }
 
   /**
+   * Update a place.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async updatePlace (req, res) {
     const { id, placeId } = req.params
@@ -113,9 +115,10 @@ export class PlaceController {
   }
 
   /**
+   * Delete a place.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async deletePlace (req, res) {
     const { id, placeId } = req.params
@@ -135,9 +138,10 @@ export class PlaceController {
   }
 
   /**
+   * Validates the ownership.
    *
-   * @param travel
-   * @param userId
+   * @param {object} travel The travel doc.
+   * @param {string} userId The user id.
    */
   async #validateOwnership (travel, userId) {
     if (!travel.userId.equals(userId)) {

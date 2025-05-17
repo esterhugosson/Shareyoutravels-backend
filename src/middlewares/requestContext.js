@@ -4,9 +4,9 @@ import httpContext from 'express-http-context'
 /**
  * Middleware that assigns a unique request ID and stores the request in the HTTP context.
  *
- * @param req
- * @param res
- * @param next
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
  */
 export const requestContext = (req, res, next) => {
   const uuid = randomUUID()

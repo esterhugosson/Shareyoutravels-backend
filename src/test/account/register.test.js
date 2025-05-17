@@ -5,8 +5,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 /**
+ * Random string function.
  *
- * @param length
+ * @param {number} length The length of the string.
+ * @returns {string} a random string
  */
 function randomString (length = 6) {
   return Math.random().toString(36).substring(2, 2 + length)

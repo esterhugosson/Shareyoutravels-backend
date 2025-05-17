@@ -8,19 +8,19 @@
 import { TravelModel } from '../../models/TravelModel.js'
 import { logger } from '../../config/winston.js'
 import createError from 'http-errors'
-import mongoose from 'mongoose'
-import httpContext from 'express-http-context'
 
 /**
  * Encapsulates a controller.
  */
 export class TravelController {
   /**
+   * Load the travel document in the req.doc if id is available in path.
    *
-   * @param req
-   * @param res
-   * @param next
-   * @param id
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   * @param {string} id - The travel document ID from the route parameter.
+   * @returns {void}
    */
   async loadTravelDoc (req, res, next, id) {
     try {
@@ -41,9 +41,10 @@ export class TravelController {
   }
 
   /**
+   * Get all public travel where isPublic - true.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async allPublicTravels (req, res) {
     const travels = await TravelModel.find({ isPublic: true })
@@ -57,9 +58,10 @@ export class TravelController {
   }
 
   /**
+   * Get all travels from the current user.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async myTravels (req, res) {
     const userId = req.user.id
@@ -75,9 +77,10 @@ export class TravelController {
   }
 
   /**
+   * Get one travel by id.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async myTravelsbyId (req, res) {
     // check ownership
@@ -90,9 +93,10 @@ export class TravelController {
   }
 
   /**
+   * Create a new travel.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async createTravel (req, res) {
     const {
@@ -128,15 +132,12 @@ export class TravelController {
   }
 
   /**
+   * Update an existing travel.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async updateTravel (req, res) {
-    // check ownership
-    //
-
-    const { id } = req.params
     const travel = req.doc
 
     this.#validateOwnership(req.doc, req.user.id)
@@ -167,9 +168,10 @@ export class TravelController {
   }
 
   /**
+   * Delete a travel.
    *
-   * @param req
-   * @param res
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
    */
   async deleteTravel (req, res) {
     // check ownership
@@ -186,9 +188,10 @@ export class TravelController {
   }
 
   /**
+   * Validate so the current user is the owner of the travel document.
    *
-   * @param travel
-   * @param userId
+   * @param {object} travel The travel doc.
+   * @param {string} userId The user id.
    */
   async #validateOwnership (travel, userId) {
     if (!travel.userId.equals(userId)) {
@@ -197,9 +200,11 @@ export class TravelController {
   }
 
   /**
+   * Helper function for placecontroller to find right travel by travel id and also validates owner.
    *
-   * @param travelId
-   * @param userId
+   * @param {string} travelId The id of the travel.
+   * @param {string} userId The user id.
+   * @returns {Promise<TravelModel>} - Resolves with the travel document if ownership is valid.
    */
   async findTravelByIdWithOwnershipCheck (travelId, userId) {
     const travel = await TravelModel.findById(travelId)
