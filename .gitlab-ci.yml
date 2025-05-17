@@ -26,3 +26,5 @@ unit-tests:
   stage: test
   script:
     - npm test
+  variables:
+    DB_CONNECTION_STRING: "mongodb://localhost:55000/testdb"
