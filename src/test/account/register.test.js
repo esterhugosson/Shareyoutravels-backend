@@ -2,10 +2,6 @@ import request from 'supertest'
 import { app } from '../../app.js'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
-/* import { connectToDatabase, disconnectFromDatabase } from '../../config/mongoose.js'
-import dotenv from 'dotenv'
-
-dotenv.config() */
 
 let mongoServer
 
@@ -44,29 +40,25 @@ describe('Account Registration', () => {
     expect(res.statusCode).toBe(201)
   })
 
-  it('should not register if email already exists', async () => {
+  it('should not register if username already exists', async () => {
     // First register user
     const uniqueSuffix = randomString()
-    const firstRes = await request(app).post('/api/v1/auth/register').send({
+    await request(app).post('/api/v1/auth/register').send({
       firstName: 'Test',
       lastName: 'User',
       username: `user${uniqueSuffix}`,
       email: `user${uniqueSuffix}@example.com`,
       password: 'securePassword123'
     })
-    console.log('First register status:', firstRes.statusCode)
-    console.log('First register body:', firstRes.body)
 
     // Try registering again with same email to get conflict
     const res = await request(app).post('/api/v1/auth/register').send({
       firstName: 'Ester',
       lastName: 'Hugosson',
-      username: `ester${randomString()}`, // different username
-      email: `user${uniqueSuffix}@example.com`, // same email as above
+      username: `user${uniqueSuffix}`, // same username
+      email: `user${randomString()}@example.com`, // different email as above
       password: 'secret12345'
     })
-
-    console.log(uniqueSuffix)
 
     expect(res.statusCode).toBe(409)
     expect(res.body.message).toMatch(/Conflict/i)
