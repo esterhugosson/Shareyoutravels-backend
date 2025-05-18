@@ -97,6 +97,10 @@ export class AccountController {
         return next(err)
       }
 
+      if (email === UserModel.find({ email })) {
+        createError(409, 'Conflict')
+      }
+
       const userDocument = await UserModel.create({
         firstName,
         lastName,
