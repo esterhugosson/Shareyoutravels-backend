@@ -1,9 +1,13 @@
 import request from 'supertest'
 import { app } from '../../app.js'
-import { connectToDatabase, disconnectFromDatabase } from '../../config/mongoose.js'
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import mongoose from 'mongoose'
+/* import { connectToDatabase, disconnectFromDatabase } from '../../config/mongoose.js'
 import dotenv from 'dotenv'
 
-dotenv.config()
+dotenv.config() */
+
+let mongoServer
 
 /**
  * Random string function.
@@ -17,11 +21,14 @@ function randomString (length = 6) {
 
 describe('Account Registration', () => {
   beforeAll(async () => {
-    await connectToDatabase('mongodb://localhost:55000/testdb')
+    mongoServer = await MongoMemoryServer.create()
+    const uri = mongoServer.getUri()
+    await mongoose.connect(uri)
   })
 
   afterAll(async () => {
-    await disconnectFromDatabase()
+    await mongoose.disconnect()
+    await mongoServer.stop()
   }, 15000) // timeout 15 sec
 
   it('should register a user successfully', async () => {
