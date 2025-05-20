@@ -8,6 +8,7 @@
 import { TravelModel } from '../../models/TravelModel.js'
 import { logger } from '../../config/winston.js'
 import createError from 'http-errors'
+import { validateAllowedFields, validateRequiredFields } from '../../utils/validateFields.js'
 
 /**
  * Encapsulates a controller.
@@ -99,6 +100,8 @@ export class TravelController {
    * @param {object} res - Express response object.
    */
   async createTravel (req, res) {
+    console.log(req.user)
+
     const {
       destination,
       transport,
@@ -110,9 +113,17 @@ export class TravelController {
       location
     } = req.body
 
-    const userId = req.user.id
-    console.log('Authenticated user:', req.user)
+    // Validation
+    const allowedFields = ['destination', 'transport', 'notes', 'places', 'isPublic', 'startDate', 'endDate', 'location']
+    const requiredFields = ['destination', 'transport', 'startDate', 'endDate', 'location']
 
+    validateAllowedFields(req.body, allowedFields)
+    validateRequiredFields(req.body, requiredFields)
+
+    // Set user id
+    const userId = req.user.id
+
+    // Create Travel
     const travel = await TravelModel.create({
       destination,
       transport,
@@ -125,6 +136,7 @@ export class TravelController {
       userId
     })
 
+    // Send status back
     res.status(201).json({
       message: 'Travel created successfully.',
       travel
@@ -140,27 +152,27 @@ export class TravelController {
   async updateTravel (req, res) {
     const travel = req.doc
 
-    this.#validateOwnership(req.doc, req.user.id)
+    // Validate ownership
+    this.#validateOwnership(travel, req.user.id)
 
-    const {
-      destination,
-      transport,
-      notes,
-      places,
-      isPublic,
-      startDate,
-      endDate,
-      location
-    } = req.body
+    // Validation
+    const allowedFields = ['destination', 'transport', 'notes', 'isPublic', 'startDate', 'endDate', 'location']
+    validateAllowedFields(req.body, allowedFields)
 
-    if (destination !== undefined) travel.destination = destination
-    if (transport !== undefined) travel.transport = transport
-    if (notes !== undefined) travel.notes = notes
-    if (places !== undefined) travel.places = places
-    if (isPublic !== undefined) travel.isPublic = isPublic
-    if (startDate !== undefined) travel.startDate = startDate
-    if (endDate !== undefined) travel.endDate = endDate
-    if (location !== undefined) travel.location = location
+    const body = req.body
+
+    if ('destination' in body) travel.destination = body.destination
+    if ('transport' in body) travel.transport = body.transport
+    if ('notes' in body) travel.notes = body.notes
+    if ('isPublic' in body) travel.isPublic = body.isPublic
+    if ('startDate' in body) travel.startDate = body.startDate
+    if ('endDate' in body) travel.endDate = body.endDate
+    if ('location' in body && typeof body.location === 'object') {
+      travel.location = {
+        ...travel.location?.toObject?.(),
+        ...body.location
+      }
+    }
 
     await travel.save()
 
