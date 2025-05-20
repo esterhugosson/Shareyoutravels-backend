@@ -13,11 +13,14 @@ export const router = express.Router({ mergeParams: true })
 
 const controller = new PlaceController()
 
-// Get all places for a travel not protected, but only public should be shown
-router.get('/', tryCatch(controller.allPlacesFromTravel.bind(controller)))
+// All places from public travels
+router.get('/public-places', tryCatch(controller.allPlacesFromPublicTravels.bind(controller)))
 
 // All routes are protected
 router.use(authenticateJWT)
+
+// Get all places for users travel
+router.get('/', tryCatch(controller.allPlacesFromTravel.bind(controller)))
 
 // Get one place from a travel
 router.get('/:placeId', tryCatch(controller.onePlaceFromTravel.bind(controller)))
