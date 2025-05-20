@@ -2,6 +2,7 @@ import request from 'supertest'
 import { app } from '../../app.js'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
+import { UserModel } from '../../models/UserModel.js'
 
 let mongoServer
 
@@ -20,6 +21,15 @@ describe('Account Sign in', () => {
     mongoServer = await MongoMemoryServer.create()
     const uri = mongoServer.getUri()
     await mongoose.connect(uri)
+
+    // ---Create a user---
+    await UserModel.create({
+      firstName: 'Ester',
+      lastName: 'Hugosson',
+      username: 'ester123',
+      email: 'ester@example.com',
+      password: 'secret12345'
+    })
   })
 
   afterAll(async () => {
@@ -28,18 +38,9 @@ describe('Account Sign in', () => {
   }, 15000)
 
   it('should login a user successfully', async () => {
-    const uniqueSuffix = randomString()
-    await request(app).post('/api/v1/auth/register').send({
-      firstName: 'Ester',
-      lastName: 'Hugosson',
-      username: `ester${uniqueSuffix}`,
-      email: `ester${uniqueSuffix}@example.com`,
-      password: 'secret12345'
-    })
-
     const res = await request(app).post('/api/v1/auth/signin').send({
 
-      username: `ester${uniqueSuffix}`,
+      username: 'ester123',
       password: 'secret12345'
 
     })
