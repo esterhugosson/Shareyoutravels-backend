@@ -27,11 +27,10 @@ export class JsonWebToken {
         }
 
         const user = {
-          id: decoded.sub,
+          id: decoded.id,
           firstName: decoded.firstName,
           lastName: decoded.lastName,
           email: decoded.email,
-          permissionLevel: decoded.permissionLevel,
           username: decoded.username
         }
 
@@ -50,11 +49,10 @@ export class JsonWebToken {
    */
   static async encodeUser (user, secret, expiresIn) {
     const payload = {
-      sub: user.id,
+      id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      permissionLevel: user.permissionLevel,
       username: user.username
     }
 

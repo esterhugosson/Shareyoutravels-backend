@@ -111,7 +111,7 @@ export class TravelController {
     } = req.body
 
     const userId = req.user.id
-    console.log(userId)
+    console.log('Authenticated user:', req.user)
 
     const travel = await TravelModel.create({
       destination,
