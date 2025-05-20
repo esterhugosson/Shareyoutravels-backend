@@ -11,7 +11,6 @@ dotenv.config()
 let mongoServer
 let token
 let userId
-// let travelId
 
 describe('Travel CRUD application', () => {
   // ---Connect to database---//
@@ -66,9 +65,6 @@ describe('Travel CRUD application', () => {
         }
 
       })
-
-    const travelId = res.body.id
-    console.log('Travel id is' + travelId)
 
     expect(res.statusCode).toBe(201)
     expect(res.body.travel.destination).toBe('Rome')
@@ -134,5 +130,75 @@ describe('Travel CRUD application', () => {
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.statusCode).toBe(200)
+  }, 15000)
+
+  let travelId
+
+  // ---CREATE & store travelId for later--- //
+  it('should create a travel and store the id', async () => {
+    const res = await request(app)
+      .post('/api/v1/travels')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        destination: 'Berlin',
+        transport: 'train',
+        notes: 'Conference trip',
+        places: [],
+        isPublic: false,
+        startDate: '2025-07-10',
+        endDate: '2025-07-15',
+        location: {
+          lat: 52.52,
+          lng: 13.405
+        }
+      })
+
+    expect(res.statusCode).toBe(201)
+    expect(res.body.travel.destination).toBe('Berlin')
+    travelId = res.body.travel.id // Save for later tests
+    console.log('BODY IS' + res.body)
+
+    console.log('TRAVELID IS ' + travelId)
+  }, 15000)
+
+  // ---READ one by ID (owned)--- //
+  it('should get my travel by id', async () => {
+    const res = await request(app)
+      .get(`/api/v1/travels/${travelId}`)
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.destination).toBe('Berlin')
+  }, 15000)
+
+  // ---UPDATE--- //
+  it('should update my travel', async () => {
+    const res = await request(app)
+      .patch(`/api/v1/travels/${travelId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        notes: 'Updated: attending JSConf',
+        isPublic: true
+      })
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.travel.notes).toBe('Updated: attending JSConf')
+    expect(res.body.travel.isPublic).toBe(true)
+  }, 15000)
+
+  // ---DELETE--- //
+  it('should delete my travel', async () => {
+    const res = await request(app)
+      .delete(`/api/v1/travels/${travelId}`)
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(res.statusCode).toBe(204)
+
+    // Check if it's really gone
+    const getRes = await request(app)
+      .get(`/api/v1/travels/${travelId}`)
+      .set('Authorization', `Bearer ${token}`)
+
+    expect(getRes.statusCode).toBe(404)
   }, 15000)
 })
