@@ -27,7 +27,7 @@ export class JsonWebToken {
         }
 
         const user = {
-          id: decoded.id,
+          id: decoded.sub,
           firstName: decoded.firstName,
           lastName: decoded.lastName,
           email: decoded.email,
@@ -49,7 +49,7 @@ export class JsonWebToken {
    */
   static async encodeUser (user, secret, expiresIn) {
     const payload = {
-      id: user._id,
+      sub: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
