@@ -3,8 +3,10 @@ import { app } from '../../app.js'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
 import { UserModel } from '../../models/UserModel.js'
+import bcrypt from 'bcrypt'
 
 let mongoServer
+const hashedPassword = await bcrypt.hash('secret12345', 10)
 
 /**
  * Random string function.
@@ -28,7 +30,7 @@ describe('Account Sign in', () => {
       lastName: 'Hugosson',
       username: 'ester123',
       email: 'ester@example.com',
-      password: 'secret12345'
+      password: hashedPassword
     })
   })
 
