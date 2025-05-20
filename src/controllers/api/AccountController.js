@@ -44,9 +44,6 @@ export class AccountController {
         process.env.REFRESH_TOKEN_LIFE
       )
 
-      console.log(accessToken)
-      console.log(refreshToken)
-
       console.log('Authenticated user', { user })
 
       res
