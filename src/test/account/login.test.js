@@ -2,8 +2,7 @@ import request from 'supertest'
 import { app } from '../../app.js'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
-import { UserModel } from '../../models/UserModel.js'
-import bcrypt from 'bcrypt'
+
 
 let mongoServer
 
@@ -22,18 +21,6 @@ describe('Account Sign in', () => {
     mongoServer = await MongoMemoryServer.create()
     const uri = mongoServer.getUri()
     await mongoose.connect(uri)
-
-    // ---Hash password inside async function---
-    const hashedPassword = await bcrypt.hash('secret12345', 10)
-
-    // ---Create a user---
-    await UserModel.create({
-      firstName: 'Ester',
-      lastName: 'Hugosson',
-      username: 'ester123',
-      email: 'ester@example.com',
-      password: hashedPassword
-    })
   })
 
   afterAll(async () => {
@@ -42,9 +29,18 @@ describe('Account Sign in', () => {
   }, 15000)
 
   it('should login a user successfully', async () => {
+    const uniqueSuffix = randomString()
+    await request(app).post('/api/v1/auth/register').send({
+      firstName: 'Ester',
+      lastName: 'Hugosson',
+      username: `ester${uniqueSuffix}`,
+      email: `ester${uniqueSuffix}@example.com`,
+      password: 'secret12345'
+    })
+
     const res = await request(app).post('/api/v1/auth/signin').send({
 
-      username: 'ester123',
+      username: `ester${uniqueSuffix}`,
       password: 'secret12345'
 
     })
