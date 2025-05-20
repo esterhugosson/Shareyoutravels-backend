@@ -29,20 +29,25 @@ describe('Account Sign in', () => {
 
   it('should login a user successfully', async () => {
     const uniqueSuffix = randomString()
-    await request(app).post('/api/v1/auth/register').send({
+    const username = `ester${uniqueSuffix}`
+    const email = `ester${uniqueSuffix}@example.com`
+
+    const registerRes = await request(app).post('/api/v1/auth/register').send({
       firstName: 'Ester',
       lastName: 'Hugosson',
-      username: `ester${uniqueSuffix}`,
-      email: `ester${uniqueSuffix}@example.com`,
+      username,
+      email,
       password: 'secret12345'
     })
+
+    expect(registerRes.statusCode).toBe(201) // 👈 Ensure registration succeeded
 
     const res = await request(app).post('/api/v1/auth/signin').send({
-
-      username: `ester${uniqueSuffix}`,
+      username,
       password: 'secret12345'
-
     })
+
+    console.log(res.body) // 👈 Optional: helpful during debugging
 
     expect(res.statusCode).toBe(200)
   })
