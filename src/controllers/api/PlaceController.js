@@ -138,6 +138,25 @@ export class PlaceController {
   }
 
   /**
+   * Get all places from all public travels.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   */
+  async allPlacesFromPublicTravels (req, res) {
+    const publicTravels = await this.travelController.allPublicTravels.populate('places')
+
+    if (!publicTravels.length) {
+      throw createError(404, 'No public travels found.')
+    }
+
+    // Flatten all places arrays into one
+    const allPlaces = publicTravels.flatMap(travel => travel.places)
+
+    res.status(200).json(allPlaces)
+  }
+
+  /**
    * Validates the ownership.
    *
    * @param {object} travel The travel doc.
