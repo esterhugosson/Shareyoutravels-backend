@@ -8,6 +8,10 @@ import { requestContext } from './middlewares/requestContext.js'
 import { morganLogger } from './config/morgan.js'
 import { router } from './routes/router.js'
 import { errorHandler } from './middlewares/errorHandler.js'
+import dotenv from 'dotenv'
+dotenv.config()
+
+const baseURL = process.env.BASE_URL || '/'
 
 const app = express()
 
@@ -17,7 +21,7 @@ app.use(express.json())
 app.use(httpContext.middleware)
 app.use(requestContext)
 app.use(morganLogger)
-app.use('/', router)
+app.use(baseURL, router)
 app.use(errorHandler)
 
 export { app }
