@@ -38,3 +38,4 @@ router.delete('/:id', authenticateJWT, tryCatch(controller.deleteTravel.bind(con
 
 // Places should use the place router
 router.use('/:id/places', placeRouter)
+router.use('/places', placeRouter)

@@ -173,17 +173,15 @@ describe('Place CRUD application', () => {
     })
   })
 
-  // Not implemented yet
-  /*  describe('GET /travels/public-places', () => {
+  describe('GET /travels/public-places', () => {
     it('should return all places from public travels', async () => {
       travel.isPublic = true
       await travel.save()
 
-      const res = await request(app).get('/backend-project/api/v1/travels/public-places')
+      const res = await request(app).get('/backend-project/api/v1/travels/places/public-places')
 
       expect(res.statusCode).toBe(200)
       expect(res.body.length).toBeGreaterThan(0)
     })
   })
- */
 })

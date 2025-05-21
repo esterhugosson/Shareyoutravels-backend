@@ -226,4 +226,13 @@ export class TravelController {
 
     return travel
   }
+
+  /**
+   * Finds all public travels and populates their places.
+   *
+   * @returns {Promise<Array>} Array of public travels with populated places.
+   */
+  async findAllPublicTravelsWithPlaces () {
+    return TravelModel.find({ isPublic: true }).populate('places')
+  }
 }

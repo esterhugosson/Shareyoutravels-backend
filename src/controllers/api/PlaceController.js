@@ -144,15 +144,13 @@ export class PlaceController {
    * @param {object} res - Express response object.
    */
   async allPlacesFromPublicTravels (req, res) {
-    const publicTravels = await this.travelController.allPublicTravels.populate('places')
+    const publicTravels = await this.travelController.findAllPublicTravelsWithPlaces()
 
     if (!publicTravels.length) {
       throw createError(404, 'No public travels found.')
     }
 
-    // Flatten all places arrays into one
     const allPlaces = publicTravels.flatMap(travel => travel.places)
-
     res.status(200).json(allPlaces)
   }
 
