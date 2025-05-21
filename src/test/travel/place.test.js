@@ -102,4 +102,88 @@ describe('Place CRUD application', () => {
       expect(res.statusCode).toBe(404)
     })
   })
+
+  describe('GET /travels/:id/places/:placeId', () => {
+    it('should get a specific place from a travel', async () => {
+      const res = await request(app)
+        .get(`/backend-project/api/v1/travels/${travel._id}/places/${place._id}`)
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(res.statusCode).toBe(200)
+      expect(res.body.name).toBe('Paris')
+    })
+  })
+
+  describe('POST /travels/:id/places', () => {
+    it('should add a place to the travel', async () => {
+      const newPlace = {
+        name: 'Rome',
+        location: {
+          lat: 41.9028,
+          lng: 12.4964
+        },
+        description: 'Colosseum and pasta',
+        date: new Date(),
+        funFacts: 'Romans built a huge empire',
+        rating: 4
+      }
+
+      const res = await request(app)
+        .post(`/backend-project/api/v1/travels/${travel._id}/places`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(newPlace)
+
+      expect(res.statusCode).toBe(201)
+      expect(res.body.name).toBe('Rome')
+    })
+  })
+
+  describe('PATCH /travels/:id/places/:placeId', () => {
+    it('should update a place', async () => {
+      const res = await request(app)
+        .patch(`/backend-project/api/v1/travels/${travel._id}/places/${place._id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: 'Paris Updated' })
+
+      expect(res.statusCode).toBe(200)
+      expect(res.body.name).toBe('Paris Updated')
+    })
+  })
+
+  describe('DELETE /travels/:id/places/:placeId', () => {
+    it('should delete a place', async () => {
+      const placeToDelete = await PlaceModel.create({
+        travelId: travel._id,
+        name: 'Berlin',
+        location: {
+          lat: 41.9028,
+          lng: 12.4964
+        },
+        dateVisited: new Date()
+      })
+
+      travel.places.push(placeToDelete._id)
+      await travel.save()
+
+      const res = await request(app)
+        .delete(`/backend-project/api/v1/travels/${travel._id}/places/${placeToDelete._id}`)
+        .set('Authorization', `Bearer ${token}`)
+
+      expect(res.statusCode).toBe(204)
+    })
+  })
+
+  // Not implemented yet
+  /*  describe('GET /travels/public-places', () => {
+    it('should return all places from public travels', async () => {
+      travel.isPublic = true
+      await travel.save()
+
+      const res = await request(app).get('/backend-project/api/v1/travels/public-places')
+
+      expect(res.statusCode).toBe(200)
+      expect(res.body.length).toBeGreaterThan(0)
+    })
+  })
+ */
 })

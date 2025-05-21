@@ -20,7 +20,7 @@ describe('Account Registration', () => {
     mongoServer = await MongoMemoryServer.create()
     const uri = mongoServer.getUri()
     await mongoose.connect(uri)
-  })
+  }, 15000)
 
   afterAll(async () => {
     await mongoose.disconnect()
@@ -62,5 +62,43 @@ describe('Account Registration', () => {
 
     expect(res.statusCode).toBe(409)
     expect(res.body.message).toMatch(/Conflict/i)
+  })
+
+  it('should NOT register if EMAIL already exists', async () => {
+    // First register user
+    const uniqueSuffix = randomString()
+    await request(app).post('/backend-project/api/v1/auth/register').send({
+      firstName: 'Test',
+      lastName: 'User',
+      username: `user${uniqueSuffix}`,
+      email: `user${uniqueSuffix}@example.com`,
+      password: 'securePassword123'
+    })
+
+    // Try registering again with same email to get conflict
+    const res = await request(app).post('/backend-project/api/v1/auth/register').send({
+      firstName: 'Ester',
+      lastName: 'Hugosson',
+      username: `user${randomString()}`,
+      email: `user${uniqueSuffix}@example.com`, // same email as above
+      password: 'secret12345'
+    })
+
+    expect(res.statusCode).toBe(409)
+    expect(res.body.message).toMatch(/Email already in use/i)
+  })
+
+  it('should NOT register with less than 10 charachter password', async () => {
+    const uniqueSuffix = randomString()
+    const res = await request(app).post('/backend-project/api/v1/auth/register').send({
+      firstName: 'Ester',
+      lastName: 'Hugosson',
+      username: `ester${uniqueSuffix}`,
+      email: `ester${uniqueSuffix}@example.com`,
+      password: '12345'
+    })
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.message).toMatch(/Validation/i)
   })
 })
