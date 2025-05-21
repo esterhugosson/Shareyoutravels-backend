@@ -7,6 +7,7 @@
 
 import express from 'express'
 import { AccountController } from '../../../controllers/api/AccountController.js'
+import { authenticateJWT } from '../../../middlewares/auth.js'
 
 export const router = express.Router()
 
@@ -24,8 +25,11 @@ router.post('/register', (req, res, next) => controller.register(req, res, next)
 // Refreshtoken
 router.post('/refresh', (req, res, next) => controller.refreshToken(req, res, next))
 
+// All routes are protected below
+router.use(authenticateJWT)
+
 // update
-router.patch('/update', (req, res, next) => controller.updaeAccountInformation(req, res, next))
+router.patch('/update', (req, res, next) => controller.updateAccountInformation(req, res, next))
 
 // delete
 router.delete('/delete', (req, res, next) => controller.deleteAccount(req, res, next))
