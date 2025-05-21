@@ -29,7 +29,7 @@ describe('Account Registration', () => {
 
   it('should register a user successfully', async () => {
     const uniqueSuffix = randomString()
-    const res = await request(app).post('/api/v1/auth/register').send({
+    const res = await request(app).post('/backend-project/api/v1/auth/register').send({
       firstName: 'Ester',
       lastName: 'Hugosson',
       username: `ester${uniqueSuffix}`,
@@ -43,7 +43,7 @@ describe('Account Registration', () => {
   it('should not register if username already exists', async () => {
     // First register user
     const uniqueSuffix = randomString()
-    await request(app).post('/api/v1/auth/register').send({
+    await request(app).post('/backend-project/api/v1/auth/register').send({
       firstName: 'Test',
       lastName: 'User',
       username: `user${uniqueSuffix}`,
@@ -52,7 +52,7 @@ describe('Account Registration', () => {
     })
 
     // Try registering again with same email to get conflict
-    const res = await request(app).post('/api/v1/auth/register').send({
+    const res = await request(app).post('/backend-project/api/v1/auth/register').send({
       firstName: 'Ester',
       lastName: 'Hugosson',
       username: `user${uniqueSuffix}`, // same username

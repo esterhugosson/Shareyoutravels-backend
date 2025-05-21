@@ -49,7 +49,7 @@ describe('Travel CRUD application', () => {
   // ---CREATE--- //
   it('should create a travel for authenticated user', async () => {
     const res = await request(app)
-      .post('/api/v1/travels') // adjust path if needed
+      .post('/backend-project/api/v1/travels') // adjust path if needed
       .set('Authorization', `Bearer ${token}`)
       .send({
         destination: 'Rome',
@@ -73,7 +73,7 @@ describe('Travel CRUD application', () => {
   // ---CREATE--- //
   it('should NOT create a travel for unauthenticated user', async () => {
     const res = await request(app)
-      .post('/api/v1/travels')
+      .post('/backend-project/api/v1/travels')
       .send({
         destination: 'Rome',
         transport: 'flight', // Make sure this matches the enum: lowercase
@@ -95,7 +95,7 @@ describe('Travel CRUD application', () => {
   // ---CREATE--- //
   it('should NOT create a travel with missing parameters', async () => {
     const res = await request(app)
-      .post('/api/v1/travels')
+      .post('/backend-project/api/v1/travels')
       .set('Authorization', `Bearer ${token}`)
       .send({
         destination: 'Rome',
@@ -117,7 +117,7 @@ describe('Travel CRUD application', () => {
   // ---READ--- //
   it('Should get my own travels', async () => {
     const res = await request(app)
-      .get('/api/v1/travels')
+      .get('/backend-project/api/v1/travels')
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.statusCode).toBe(200)
@@ -126,7 +126,7 @@ describe('Travel CRUD application', () => {
   // ---READ--- //
   it('Should get all public travels', async () => {
     const res = await request(app)
-      .get('/api/v1/travels/allTravels')
+      .get('/backend-project/api/v1/travels/allTravels')
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.statusCode).toBe(200)
@@ -137,7 +137,7 @@ describe('Travel CRUD application', () => {
   // ---CREATE & store travelId for later--- //
   it('should create a travel and store the id', async () => {
     const res = await request(app)
-      .post('/api/v1/travels')
+      .post('/backend-project/api/v1/travels')
       .set('Authorization', `Bearer ${token}`)
       .send({
         destination: 'Berlin',
@@ -164,7 +164,7 @@ describe('Travel CRUD application', () => {
   // ---READ one by ID (owned)--- //
   it('should get my travel by id', async () => {
     const res = await request(app)
-      .get(`/api/v1/travels/${travelId}`)
+      .get(`/backend-project/api/v1/travels/${travelId}`)
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.statusCode).toBe(200)
@@ -174,7 +174,7 @@ describe('Travel CRUD application', () => {
   // ---UPDATE--- //
   it('should update my travel', async () => {
     const res = await request(app)
-      .patch(`/api/v1/travels/${travelId}`)
+      .patch(`/backend-project/api/v1/travels/${travelId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
         notes: 'Updated: attending JSConf',
@@ -189,14 +189,14 @@ describe('Travel CRUD application', () => {
   // ---DELETE--- //
   it('should delete my travel', async () => {
     const res = await request(app)
-      .delete(`/api/v1/travels/${travelId}`)
+      .delete(`/backend-project/api/v1/travels/${travelId}`)
       .set('Authorization', `Bearer ${token}`)
 
     expect(res.statusCode).toBe(204)
 
     // Check if it's really gone
     const getRes = await request(app)
-      .get(`/api/v1/travels/${travelId}`)
+      .get(`/backend-project/api/v1/travels/${travelId}`)
       .set('Authorization', `Bearer ${token}`)
 
     expect(getRes.statusCode).toBe(404)
