@@ -94,8 +94,9 @@ export class AccountController {
         return next(err)
       }
 
-      if (email === UserModel.find({ email })) {
-        createError(409, 'Conflict')
+      const existingUser = await UserModel.findOne({ email })
+      if (existingUser) {
+        return next(createError(409, 'Email already in use'))
       }
 
       const userDocument = await UserModel.create({
@@ -197,7 +198,7 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    * @returns {void}
    */
-  async updaeAccountInformation (req, res, next) {
+  async updateAccountInformation (req, res, next) {
     try {
       const userId = req.user.id
 
@@ -247,6 +248,8 @@ export class AccountController {
 
       res.status(200).json({ message: 'Account updated successfully', user: updatedUser.toObject() })
     } catch (error) {
+      console.error('Update account error:', error)
+
       let httpStatusCode = 500
 
       if (error.code === 11000) {
