@@ -22,7 +22,7 @@ describe('Account Sign in', () => {
     mongoServer = await MongoMemoryServer.create()
     const uri = mongoServer.getUri()
     await mongoose.connect(uri)
-  })
+  }, 15000)
 
   afterAll(async () => {
     await mongoose.disconnect()
@@ -92,6 +92,20 @@ describe('Account Sign in', () => {
 
     expect(res.statusCode).toBe(200)
     expect(res.body.user.firstName).toBe(newFirst)
+  })
+
+  it('should update account information successfully', async () => {
+    const newusername = `user${randomString()}`
+
+    const res = await request(app)
+      .patch('/backend-project/api/v1/auth/update')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        username: newusername
+      })
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.user.username).toBe(newusername)
   })
 
   it('should not update account information without a valid token', async () => {
