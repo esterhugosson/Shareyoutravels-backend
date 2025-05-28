@@ -205,7 +205,7 @@ export class TravelController {
    * @param {object} travel The travel doc.
    * @param {string} userId The user id.
    */
-  async #validateOwnership (travel, userId) {
+  #validateOwnership (travel, userId) {
     if (!travel.userId.equals(userId)) {
       throw createError(403, 'You are not authorized to modify this image.')
     }
