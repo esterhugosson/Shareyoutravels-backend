@@ -1,6 +1,4 @@
-## Share your travels - api
-
-> This is the backend api for the website share your travels. 
+## Share your travels - REST API
 
 ---
 
