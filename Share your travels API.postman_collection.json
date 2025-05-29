@@ -1,0 +1,875 @@
+{
+	"info": {
+		"_postman_id": "61ebad26-2963-45d9-b8de-db6b27598282",
+		"name": "Share your travels API",
+		"description": "API collection for Share Your Travels backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31753600"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register a user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User registered successfully\", function () {",
+									"    pm.response.to.have.status(201);",
+									"    pm.response.to.have.jsonBody(\"id\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const randomNumber = Math.floor(Math.random() * 100000);",
+									"",
+									"pm.environment.set(\"randomUsername\", \"user\" + randomNumber);",
+									"pm.environment.set(\"randomPassword\", \"password\" + randomNumber);",
+									"pm.environment.set(\"randomFirst\", \"firstname\" + randomNumber);",
+									"pm.environment.set(\"randomLast\", \"lastname\" + randomNumber);",
+									"pm.environment.set(\"randomEmail\", \"user\" + randomNumber + \"@example.com\");",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"{{randomFirst}}\",\n    \"lastName\": \"{{randomLast}}\",\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"securepassword\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/auth/register",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign in user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.environment.set(\"access_token\", jsonData.access_token);",
+									"pm.environment.set(\"refresh_token\", jsonData.refresh_token);",
+									"",
+									"",
+									"pm.test(\"User signed in successfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"access_token\");",
+									"    pm.expect(jsonData).to.have.property(\"refresh_token\");",
+									"    pm.expect(jsonData).to.have.property(\"user\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"securepassword\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/auth/signin",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Returned a new access token successully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.have.jsonBody(\"access_token\");",
+									"    pm.response.to.have.jsonBody(\"refresh_token\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/auth/refresh",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"update successful\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    pm.response.to.have.jsonBody(\"message\");",
+									"   pm.response.to.have.jsonBody(\"user\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lastName\": \"testsson\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/auth/update",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"auth",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Travels",
+			"item": [
+				{
+					"name": "Create Travel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"if (jsonData && jsonData.travel && jsonData.travel.id) {",
+									"  pm.environment.set(\"travel_id\", jsonData.travel.id);",
+									"} else {",
+									"  console.warn(\"Couldn't find travel.id in response:\", jsonData);",
+									"}",
+									"",
+									"pm.test(\"User created travel succesfully\", function () {",
+									"    pm.response.to.have.status(201);",
+									"    pm.response.to.have.jsonBody(\"message\");",
+									"    pm.response.to.have.jsonBody(\"travel\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"destination\": \"Spain\",\n  \"transport\": \"flight\",\n  \"notes\": \"Beautiful country\",\n  \"startDate\": \"2025-06-01\",\n  \"endDate\": \"2025-06-15\",\n  \"location\": {\n    \"lat\": 40.4637,\n    \"lng\": -3.7492\n  },\n  \"isPublic\": false\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Travels",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User get all travel succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/travels",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET all public travels",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User got all public travels succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"destination\": \"Marocko\",\n    \"transport\": \"flight\",\n    \"notes\": \" Beutiful country\"\n}"
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels/allTravels",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"allTravels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Travel by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User got one travel succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update travel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User update travel succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const jsonData = pm.response.json();",
+									"  pm.expect(jsonData.travel.notes).to.eql(\"Such a cool place\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notes\": \"Such a cool place\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Places",
+			"item": [
+				{
+					"name": "Add Place to Travel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"if (jsonData && jsonData.id) {",
+									"  pm.environment.set(\"place_id\", jsonData.id);",
+									"} else {",
+									"  console.warn(\"Couldn't find id in response:\", jsonData);",
+									"}",
+									"",
+									"pm.test(\"User created place succesfully\", function () {",
+									"    pm.response.to.have.status(201);",
+									"    pm.response.to.have.jsonBody(\"travelId\");",
+									"    pm.response.to.have.jsonBody(\"id\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Our fist stop\",\n    \"description\": \"We stayed two night here\",\n    \"location\": {\n            \"lat\": 40.4637,\n            \"lng\": -3.7492\n        },\n    \"dateVisited\": \"2025-06-01T00:00:00.000Z\",\n    \"funFacts\": \"A cute litte place\",\n    \"rating\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}/places",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}",
+								"places"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Place by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"User got place succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}/places/{{place_id}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}",
+								"places",
+								"{{place_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all places from one travel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User got place succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}/places",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}",
+								"places"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a place on travel",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Our fist stop\",\n    \"description\": \"We stayed two night here\",\n    \"location\": {\n            \"lat\": 40.4637,\n            \"lng\": -3.7492\n        },\n    \"dateVisited\": \"2025-06-01T00:00:00.000Z\",\n    \"funFacts\": \"A cute litte place\",\n    \"rating\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}/places/{{place_id}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}",
+								"places",
+								"{{place_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Public Places",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User got place succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/travels/6837467d6cb4e77ee0534125/places/public-places",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"6837467d6cb4e77ee0534125",
+								"places",
+								"public-places"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Delete",
+			"item": [
+				{
+					"name": "Delete a place from travel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User deleted place succesfully\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"We stayed three nights here\"\n}"
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}/places/{{place_id}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}",
+								"places",
+								"{{place_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete travel",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User deleted travel succesfully\", function () {",
+									"    pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Base_URL}}/travels/{{travel_id}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"travels",
+								"{{travel_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete an accounts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User deleted travel succesfully\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{Base_URL}}/auth/delete",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"auth",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Base_URL",
+			"value": "https://cscloud7-102.lnu.se/backend-project/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "travel_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "place_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
