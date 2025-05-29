@@ -70,7 +70,7 @@ You can access the deployed API here (version 1):
 #### Installation
 
 ```bash
-git clone git@gitlab.lnu.se:1dv613/student/eh225bx/projects/backend-project.git
+git clone git@github.com:esterhugosson/Shareyoutravels-backend.git
 cd BACKEND
 npm install
 ```
@@ -160,13 +160,6 @@ This project uses the ESLint, to run, run the following command:
 npm run lint
 ```
 You can configure rules in .eslintrc.json. Use npm run lint:fix to auto-fix common issues.
-
----
-
-### CI/CD Pipeline
-
-CI/CD is configured to run tests and lint on each push using .gitlab-ci.yml
->Make sure your branch passes these checks before opening a pull request.
 
 ---
 
