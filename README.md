@@ -132,7 +132,7 @@ npm run dev
 Read about all endpoints here -> [API Documentation](./ENDPOINTS.md)
 
 
-Link: [API Documentation (Postman Collection)](.)
+Link: [API Documentation (Postman Collection)](./Share%20your%20travels%20API.postman_collection.json)
 
 ---
 
@@ -149,6 +149,11 @@ There are ~30 automated tests using `supertest` and `jest`.
 - Travel CRUD operations
 - Place CRUD within travels
 - Validation and error handling
+
+You can also test the endpoint in postman.
+
+1. Import the postman collection [this](./Share%20your%20travels%20API.postman_collection.json)
+2. Run the tests by pressing Run in the main folder
 
 ---
 
