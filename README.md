@@ -131,7 +131,7 @@ npm run dev
 Read about all endpoints here -> [API Documentation](./ENDPOINTS.md)
 
 
-Link: [API Documentation (Postman Collection)](./Share%20your%20travels%20API.postman_collection.json)
+Or on postman: [API Documentation (Postman Collection)](./Share%20your%20travels%20API.postman_collection.json)
 
 ---
 
