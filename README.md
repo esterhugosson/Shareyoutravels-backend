@@ -15,11 +15,10 @@
 9. [API Documentation](#api-documentation)
 10. [Running Tests](#running-tests)
 11. [Linting](#linting)
-12. [CI/CD Pipeline](#cicd-pipeline)
-13. [Folder Structure](#folder-structure)
-14. [Contributing](#contributing)
-15. [Known Issues & Future Improvements](#known-issues--future-improvements)
-16. [License](#license)
+12. [Folder Structure](#folder-structure)
+13. [Contributing](#contributing)
+14. [Known Issues & Future Improvements](#known-issues--future-improvements)
+15. [License](#license)
 
 ---
 
